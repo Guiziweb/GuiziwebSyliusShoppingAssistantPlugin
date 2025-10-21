@@ -1,0 +1,42 @@
+{% form_theme form '@SyliusAdmin/shared/form_theme.html.twig' %}
+{% import '@SyliusAdmin/shared/helper/translations.html.twig' as translations %}
+
+<div class="container-xl" {{ attributes }}>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': form.vars.id}}) }}
+    <div class="row">
+        {% if hookable_metadata.configuration.method is defined %}
+            <input type="hidden" name="_method" value="{{ hookable_metadata.configuration.method }}" />
+        {% endif %}
+        {{ form_errors(form) }}
+        {{ form_widget(form._token) }}
+
+        {# General section #}
+        <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-title">{{ 'guiziweb.ui.general'|trans }}</div>
+                </div>
+                <div class="card-body">
+                    {{ form_row(form.enabled) }}
+                    {{ form_row(form.channel) }}
+                    {% if form.agent is defined %}
+                        {{ form_row(form.agent) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Translations section #}
+        <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-title">{{ 'sylius.ui.translations'|trans }}</div>
+                </div>
+                <div class="card-body">
+                    {{ translations.default(form.translations) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form, {render_rest: hookable.configuration.render_rest|default(false)}) }}
+</div>

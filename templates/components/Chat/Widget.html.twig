@@ -1,0 +1,89 @@
+{% if this.shouldDisplay %}
+<div {{ attributes }}
+     data-chat-widget
+     data-chat-url-value="{{ path('guiziweb_shop_chat') }}"
+     data-chat-product-cards-url-value="{{ path('guiziweb_shop_chat_product_cards') }}"
+     data-csrf-token="{{ csrf_token('chat') }}">
+    {# Bootstrap Offcanvas Chat - Slides from right like cart #}
+    <div class="offcanvas offcanvas-end offcanvas-wide" tabindex="-1" id="offcanvasChat" data-chat-target="offcanvas">
+        {# Header #}
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">{{ 'Shopping Assistant'|trans }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        {# Messages #}
+        <div class="offcanvas-body d-flex flex-column p-0">
+            <div class="flex-grow-1 overflow-auto p-3" data-chat-target="messages">
+            {% if this.messages is empty %}
+                <div class="mb-1 d-flex" data-chat-target="message" data-role="assistant">
+                    <div class="rounded-3 p-2" data-chat-target="message-bubble">
+                        <div data-chat-target="message-content">
+                            {{ this.welcomeMessage }}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                {% for message in this.messages %}
+                    <div class="mb-1 d-flex" data-chat-target="message" data-role="{{ message.role }}">
+                        <div class="rounded-3 p-2" data-chat-target="message-bubble">
+                            <div data-chat-target="message-content">
+                                {{ message.content }}
+                            </div>
+
+                            {# Products container - same structure as JS template #}
+                            <div data-chat-target="products" class="d-flex flex-column gap-2 mt-2{% if message.products is not defined or message.products is empty %} d-none{% endif %}">
+                                {% if message.products is defined and message.products is not empty %}
+                                    {% for product in message.products %}
+                                        {{ component('sylius_shop:product:card', {
+                                            product: product,
+                                            template: '@SyliusShop/product/common/card.html.twig'
+                                        }) }}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+            <div class="border-top p-3 bg-white">
+                {{ form_start(this.form, {
+                    'attr': {
+                        'data-chat-target': 'form',
+                        'data-action': 'chat#submit',
+                        'class': 'd-flex gap-2'
+                    }
+                }) }}
+                    {{ form_widget(this.form.message, {
+                        'attr': {
+                            'data-chat-target': 'input',
+                            'class': 'form-control flex-grow-1'
+                        }
+                    }) }}
+                    <button type="submit" class="btn btn-primary" data-chat-target="submit">
+                        {{ ux_icon('tabler:send') }}
+                    </button>
+                {{ form_end(this.form, {'render_rest': false}) }}
+            </div>
+        </div>
+    </div>
+
+    {# Message template for JavaScript #}
+    <template data-chat-target="message-template">
+        <div class="mb-1 d-flex" data-chat-target="message">
+            <div class="rounded-3 p-2" data-chat-target="message-bubble">
+                <div data-chat-target="message-content"></div>
+                <div data-chat-target="products" class="d-flex flex-column gap-2 mt-2 d-none"></div>
+            </div>
+        </div>
+    </template>
+
+    {# Loading template for assistant messages #}
+    <template data-chat-target="loading-template">
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        <span class="text-muted">{{ 'guiziweb.ui.typing'|trans }}</span>
+    </template>
+</div>
+{% endif %}

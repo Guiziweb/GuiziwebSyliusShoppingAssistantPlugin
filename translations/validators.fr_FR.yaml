@@ -1,0 +1,9 @@
+guiziweb:
+    chat_widget_configuration:
+        channel:
+            not_blank: Veuillez sélectionner un canal.
+            unique: Un widget de chat existe déjà pour ce canal.
+        agent:
+            not_blank: Veuillez sélectionner un agent.
+        welcome_message:
+            not_blank: Veuillez saisir un message de bienvenue.

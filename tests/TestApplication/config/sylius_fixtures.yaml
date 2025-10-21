@@ -1,0 +1,48 @@
+sylius_fixtures:
+    suites:
+        demo:
+            fixtures:
+                platform_configuration:
+                    options:
+                        custom:
+                            - code: 'Gemini'
+                              name: 'Gemini'
+                              enabled: true
+                              provider: 'gemini'
+                              api_key: 'AIzaSyDnps7on2fBvxwqT7i7YQOYajhKCdb70AQ'
+
+                agent_configuration:
+                    options:
+                        custom:
+                            - code: 'shopping_assistant'
+                              name: 'Assistant'
+                              enabled: true
+                              channel: 'FASHION_WEB'
+                              platform: 'Gemini'
+                              model: 'gemini-2.5-flash'
+                              system_prompt: |
+                                  You are a helpful shopping assistant for a fashion e-commerce store.
+
+                                  Guidelines:
+                                  - Always search for products before discussing specific items
+                                  - Verify product details before adding items to cart
+                                  - Use product codes when managing the cart
+                                  - Be concise and helpful in your responses
+                                  - If you cannot find what the customer wants, suggest alternatives
+                                  - Guide customers naturally through their shopping journey
+                              tools:
+                                  - 'Guiziweb\SyliusShoppingAssistantPlugin\Tool\SearchProductsTool'
+                                  - 'Guiziweb\SyliusShoppingAssistantPlugin\Tool\AddToCartTool'
+                                  - 'Guiziweb\SyliusShoppingAssistantPlugin\Tool\RemoveFromCartTool'
+                                  - 'Guiziweb\SyliusShoppingAssistantPlugin\Tool\GetProductInfoTool'
+                                  - 'Guiziweb\SyliusShoppingAssistantPlugin\Tool\RedirectTool'
+                                  - 'Guiziweb\SyliusShoppingAssistantPlugin\Tool\ShowProductCardTool'
+
+                chat_widget_configuration:
+                    options:
+                        custom:
+                            - channel: 'FASHION_WEB'
+                              agent: 'shopping_assistant'
+                              enabled: true
+                              locale: 'en_US'
+                              welcome_message: 'Hello! I am your shopping assistant. How can I help you today?'

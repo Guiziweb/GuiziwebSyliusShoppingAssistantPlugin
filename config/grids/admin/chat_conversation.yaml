@@ -1,0 +1,76 @@
+sylius_grid:
+    grids:
+        guiziweb_chat_conversation:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatConversation
+            sorting:
+                createdAt: desc
+            fields:
+                id:
+                    type: string
+                    label: sylius.ui.id
+                    sortable: id
+                customer:
+                    type: string
+                    label: guiziweb.ui.customer
+                    path: customerEmail
+                    sortable: customer.email
+                sessionId:
+                    type: string
+                    label: guiziweb.ui.session_id
+                    sortable: sessionId
+                channel:
+                    type: string
+                    label: sylius.ui.channel
+                    path: channelName
+                    sortable: channel.code
+                messagesCount:
+                    type: string
+                    label: guiziweb.ui.messages_count
+                    path: messagesCount
+                createdAt:
+                    type: datetime
+                    label: sylius.ui.created_at
+                    sortable: createdAt
+                    options:
+                        format: 'Y-m-d H:i:s'
+                updatedAt:
+                    type: datetime
+                    label: sylius.ui.updated_at
+                    sortable: updatedAt
+                    options:
+                        format: 'Y-m-d H:i:s'
+            filters:
+                channel:
+                    type: entity
+                    label: sylius.ui.channel
+                    form_options:
+                        class: Sylius\Component\Core\Model\Channel
+                customer:
+                    type: string
+                    label: guiziweb.ui.customer
+                    form_options:
+                        type: contains
+                sessionId:
+                    type: string
+                    label: guiziweb.ui.session_id
+                    form_options:
+                        type: contains
+                createdAt:
+                    type: date
+                    label: sylius.ui.created_at
+            actions:
+                main:
+                    create:
+                        type: create
+                        enabled: false
+                item:
+                    show:
+                        type: show
+                    delete:
+                        type: delete
+                bulk:
+                    delete:
+                        type: delete

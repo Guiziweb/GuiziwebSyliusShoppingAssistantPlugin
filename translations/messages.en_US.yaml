@@ -1,0 +1,24 @@
+guiziweb:
+    ui:
+        chat_widget: Chat Widget
+        chat_widget_configuration: Chat Widget Configuration
+        chat_widget_configurations: Chat Widget Configurations
+        chat_conversations: Chat Conversations
+        chat_conversation: Chat Conversation
+        welcome_message: Welcome Message
+        welcome_message_help: This is the first message the chatbot will send when a customer opens the chat.
+        welcome_message_placeholder: 'e.g., Hello! How can I help you today?'
+        select_agent: Select an agent
+        customer: Customer
+        anonymous: Anonymous
+        session_id: Session ID
+        messages_count: Messages
+        messages: Messages
+        general: General Information
+        user: User
+        assistant: Assistant
+        no_messages: No messages yet
+        dates: Dates
+        typing: Typing...
+    chat:
+        rate_limit_exceeded: 'You are sending too many messages. Please wait %seconds% seconds before trying again.'

@@ -1,0 +1,32 @@
+/**
+ * Chat Widget Styles
+ * Uses Bootstrap CSS variables for theme compatibility
+ */
+
+/* User messages - align right, primary color */
+[data-role="user"] {
+    justify-content: flex-end;
+}
+
+[data-role="user"] [data-chat-target="message-bubble"] {
+    background-color: var(--bs-primary);
+    color: var(--bs-white);
+}
+
+/* Assistant messages - align left, light background */
+[data-role="assistant"] {
+    justify-content: flex-start;
+}
+
+[data-role="assistant"] [data-chat-target="message-bubble"] {
+    background-color: var(--bs-light);
+}
+
+/* Remove paragraph margins inside message content */
+[data-chat-target="message-content"] p {
+    margin-bottom: 0;
+}
+
+[data-chat-target="message-content"] p:last-child {
+    margin-bottom: 0;
+}

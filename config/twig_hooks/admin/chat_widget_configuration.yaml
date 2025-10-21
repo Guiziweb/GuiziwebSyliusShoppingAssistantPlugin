@@ -1,0 +1,24 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.chat_widget_configuration.create.content':
+            form:
+                component: 'guiziweb:chat_widget_configuration:form'
+                props:
+                    resource: '@=_context.resource'
+                    form: '@=_context.form'
+                    template: '@SyliusAdmin/shared/crud/common/content/form.html.twig'
+                configuration:
+                    render_rest: false
+                priority: 100
+
+        'sylius_admin.chat_widget_configuration.update.content':
+            form:
+                component: 'guiziweb:chat_widget_configuration:form'
+                props:
+                    resource: '@=_context.resource'
+                    form: '@=_context.form'
+                    template: '@SyliusAdmin/shared/crud/common/content/form.html.twig'
+                configuration:
+                    render_rest: false
+                    method: PUT
+                priority: 100

@@ -1,0 +1,48 @@
+sylius_grid:
+    grids:
+        guiziweb_chat_widget_configuration:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfiguration
+            sorting:
+                id: desc
+            fields:
+                id:
+                    type: string
+                    label: sylius.ui.id
+                    sortable: ~
+                channel:
+                    type: twig
+                    label: guiziweb.ui.channel
+                    options:
+                        template: '@SyliusAdmin/shared/grid/field/channel.html.twig'
+                agent:
+                    type: twig
+                    label: guiziweb.ui.agent
+                    path: .
+                    options:
+                        template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/grid/field/agent.html.twig'
+                enabled:
+                    type: twig
+                    label: guiziweb.ui.enabled
+                    options:
+                        template: '@SyliusAdmin/shared/grid/field/boolean.html.twig'
+            filters:
+                channel:
+                    type: entity
+                    label: guiziweb.ui.channel
+                    form_options:
+                        class: Sylius\Component\Core\Model\Channel
+                enabled:
+                    type: boolean
+                    label: guiziweb.ui.enabled
+            actions:
+                main:
+                    create:
+                        type: create
+                item:
+                    update:
+                        type: update
+                    delete:
+                        type: delete

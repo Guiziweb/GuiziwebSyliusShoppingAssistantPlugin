@@ -1,0 +1,13 @@
+{% if is_chat_widget_enabled() %}
+<div class="col-auto">
+    <button
+        class="btn btn-icon btn-transparent px-0 position-relative"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasChat"
+        aria-label="{{ 'Chat assistant'|trans }}"
+    >
+        {{ ux_icon('tabler:message-chatbot') }}
+        <span class="d-none d-lg-block ps-1">{{ 'Chat'|trans }}</span>
+    </button>
+</div>
+{% endif %}

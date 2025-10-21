@@ -1,0 +1,5 @@
+# Removed: no more entities in the plugin
+# sylius_resource:
+#     mapping:
+#         paths:
+#             - '%kernel.project_dir%/../../../src/Entity'

@@ -1,0 +1,28 @@
+imports:
+    - { resource: "@GuiziwebSyliusAIPlatformBundle/config/config.yaml" }
+    - { resource: "@GuiziwebSyliusShoppingAssistantPlugin/config/config.yaml" }
+    - { resource: "services_test.php" }
+    - { resource: "packages/doctrine.yaml" }
+    - { resource: "packages/sylius_resource.yaml" }
+    - { resource: "sylius_fixtures.yaml" }
+
+twig:
+    paths:
+        '%kernel.project_dir%/../../../tests/TestApplication/templates': ~
+
+# Remove if you do not need to extend entities
+doctrine:
+    dbal:
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    TestApplication:
+                        is_bundle: false
+                        type: attribute
+                        dir: '%kernel.project_dir%/../../../tests/TestApplication/src/Entity'
+                        prefix: Tests\Guiziweb\SyliusShoppingAssistantPlugin

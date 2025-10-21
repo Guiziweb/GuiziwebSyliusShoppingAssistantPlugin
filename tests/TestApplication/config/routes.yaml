@@ -1,0 +1,8 @@
+guiziweb_sylius_ai_platform:
+    resource: "@GuiziwebSyliusAIPlatformBundle/config/routes.yaml"
+
+guiziweb_sylius_shopping_assistant_admin:
+    resource: "@GuiziwebSyliusShoppingAssistantPlugin/config/routes/admin.yaml"
+
+guiziweb_sylius_shopping_assistant_shop:
+    resource: "@GuiziwebSyliusShoppingAssistantPlugin/config/routes/shop.yaml"

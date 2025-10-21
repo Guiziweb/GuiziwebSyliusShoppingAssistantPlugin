@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfiguration" table="guiziweb_shopping_assistant_chat_widget_configuration" repository-class="Guiziweb\SyliusShoppingAssistantPlugin\Repository\ChatWidgetConfigurationRepository">
+        <unique-constraints>
+            <unique-constraint name="unique_channel" columns="channel_id"/>
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="enabled" type="boolean" nullable="false" />
+
+        <many-to-one field="channel" target-entity="Sylius\Component\Channel\Model\ChannelInterface">
+            <join-column name="channel_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
+        </many-to-one>
+
+        <many-to-one field="agent" target-entity="Guiziweb\SyliusAIPlatformBundle\Entity\AgentConfiguration">
+            <join-column name="agent_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
+        </many-to-one>
+
+        <one-to-many field="translations" target-entity="Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfigurationTranslation" mapped-by="translatable" orphan-removal="true" index-by="locale">
+            <cascade>
+                <cascade-all/>
+            </cascade>
+        </one-to-many>
+    </entity>
+
+</doctrine-mapping>

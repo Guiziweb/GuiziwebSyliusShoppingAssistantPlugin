@@ -1,0 +1,14 @@
+{
+  "entrypoints": {
+    "shop": {
+      "js": [
+        "/build/shop.js"
+      ]
+    },
+    "admin": {
+      "js": [
+        "/build/admin.js"
+      ]
+    }
+  }
+}

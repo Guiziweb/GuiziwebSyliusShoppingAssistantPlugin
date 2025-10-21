@@ -1,0 +1,6 @@
+{% set messages = data.messages %}
+{% if messages is not null and messages.messages is not empty %}
+    <span class="badge bg-primary">{{ messages.messages|length }}</span>
+{% else %}
+    <span class="badge bg-secondary">0</span>
+{% endif %}

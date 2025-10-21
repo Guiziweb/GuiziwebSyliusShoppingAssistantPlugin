@@ -1,0 +1,10 @@
+sylius_resource:
+    resources:
+        guiziweb.chat_widget_configuration:
+            driver: doctrine/orm
+            classes:
+                model: Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfiguration
+                form: Guiziweb\SyliusShoppingAssistantPlugin\Form\Type\ChatWidgetConfigurationType
+            translation:
+                classes:
+                    model: Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfigurationTranslation

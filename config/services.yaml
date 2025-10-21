@@ -1,0 +1,36 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Guiziweb\SyliusShoppingAssistantPlugin\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+
+    # AI Logger
+    Psr\Log\LoggerInterface $aiLogger: '@monolog.logger.ai'
+
+    # Tools - need explicit tag
+    Guiziweb\SyliusShoppingAssistantPlugin\Tool\SearchProductsTool:
+        tags: ['guiziweb.ai_tool']
+
+    Guiziweb\SyliusShoppingAssistantPlugin\Tool\AddToCartTool:
+        tags: ['guiziweb.ai_tool']
+
+    Guiziweb\SyliusShoppingAssistantPlugin\Tool\RemoveFromCartTool:
+        tags: ['guiziweb.ai_tool']
+
+    Guiziweb\SyliusShoppingAssistantPlugin\Tool\RedirectTool:
+        tags: ['guiziweb.ai_tool']
+
+    Guiziweb\SyliusShoppingAssistantPlugin\Tool\ShowProductCardTool:
+        tags: ['guiziweb.ai_tool']
+
+    Guiziweb\SyliusShoppingAssistantPlugin\Tool\GetProductInfoTool:
+        tags: ['guiziweb.ai_tool']
+
+    # Chat Conversation Context - Composite
+    guiziweb.context.chat_conversation.composite:
+        class: Guiziweb\SyliusShoppingAssistantPlugin\Context\CompositeChatConversationContext
+        public: true

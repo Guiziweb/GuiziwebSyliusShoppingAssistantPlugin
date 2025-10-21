@@ -1,0 +1,28 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_admin.chat_conversation.show.content':
+            sections:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections.html.twig'
+                priority: 0
+
+        'sylius_admin.chat_conversation.show.content.sections':
+            general:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections/general.html.twig'
+                priority: 100
+            messages:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections/messages.html.twig'
+                priority: 50
+
+        'sylius_admin.chat_conversation.show.content.sections.general':
+            customer:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections/general/customer.html.twig'
+                priority: 400
+            session_id:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections/general/session_id.html.twig'
+                priority: 300
+            channel:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections/general/channel.html.twig'
+                priority: 200
+            dates:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/admin/chat_conversation/show/content/sections/general/dates.html.twig'
+                priority: 100

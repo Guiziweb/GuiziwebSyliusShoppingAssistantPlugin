@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatConversation" table="guiziweb_shopping_assistant_chat_conversation" repository-class="Guiziweb\SyliusShoppingAssistantPlugin\Repository\ChatConversationRepository">
+        <indexes>
+            <index name="idx_conversation_customer" columns="customer_id,channel_id"/>
+            <index name="idx_conversation_session" columns="session_id,channel_id"/>
+        </indexes>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="sessionId" type="string" column="session_id" length="255" nullable="true" />
+        <field name="messagesData" type="text" nullable="true" />
+        <field name="createdAt" type="datetime_immutable" nullable="false" />
+        <field name="updatedAt" type="datetime_immutable" nullable="false" />
+
+        <many-to-one field="customer" target-entity="Sylius\Component\Customer\Model\CustomerInterface">
+            <join-column name="customer_id" referenced-column-name="id" nullable="true" on-delete="CASCADE" />
+        </many-to-one>
+
+        <many-to-one field="channel" target-entity="Sylius\Component\Channel\Model\ChannelInterface">
+            <join-column name="channel_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
+        </many-to-one>
+    </entity>
+
+</doctrine-mapping>

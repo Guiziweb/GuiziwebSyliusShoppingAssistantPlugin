@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfigurationTranslation" table="guiziweb_shopping_assistant_chat_widget_config_translation">
+        <unique-constraints>
+            <unique-constraint name="guiziweb_chat_widget_translation_uniq" columns="translatable_id,locale" />
+        </unique-constraints>
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO" />
+        </id>
+
+        <field name="locale" type="string" length="5" nullable="false" />
+        <field name="welcomeMessage" type="text" nullable="false" />
+
+        <many-to-one field="translatable" target-entity="Guiziweb\SyliusShoppingAssistantPlugin\Entity\ChatWidgetConfiguration" inversed-by="translations">
+            <join-column name="translatable_id" referenced-column-name="id" nullable="false" on-delete="CASCADE" />
+        </many-to-one>
+    </entity>
+
+</doctrine-mapping>

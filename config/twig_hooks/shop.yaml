@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.base.header.content':
+            chat_button:
+                template: '@GuiziwebSyliusShoppingAssistantPlugin/shop/header/chat_button.html.twig'
+                priority: 95

@@ -1,0 +1,6 @@
+sylius_twig_hooks:
+    hooks:
+        'sylius_shop.base.offcanvas':
+            chat_widget:
+                component: 'guiziweb:chat:widget'
+                priority: -1000

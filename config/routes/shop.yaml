@@ -1,0 +1,9 @@
+# Define your shop routes here
+
+guiziweb_chat:
+    resource: ../../src/Controller/ChatController.php
+    type: attribute
+
+guiziweb_shop_product_cards:
+    resource: ../../src/Controller/Shop/ProductCardController.php
+    type: attribute

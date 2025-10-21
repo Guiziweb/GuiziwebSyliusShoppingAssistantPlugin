@@ -1,0 +1,10 @@
+<div class="row">
+    <div class="col-12 col-md-4 fw-bold">{{ 'sylius.ui.channel'|trans }}</div>
+    <div class="col-12 col-md-8">
+        {% if hookable_metadata.context.resource.channel is not null %}
+            {{ hookable_metadata.context.resource.channel.name }}
+        {% else %}
+            <span class="text-muted">-</span>
+        {% endif %}
+    </div>
+</div>

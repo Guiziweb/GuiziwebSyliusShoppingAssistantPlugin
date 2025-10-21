@@ -1,0 +1,6 @@
+guiziweb_sylius_shopping_assistant_admin:
+    resource: "routes/admin.yaml"
+    prefix: /admin
+
+guiziweb_sylius_shopping_assistant_shop:
+    resource: "routes/shop.yaml"
