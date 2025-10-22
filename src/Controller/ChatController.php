@@ -21,7 +21,7 @@ final class ChatController extends AbstractController
     ) {
     }
 
-    #[Route('/chat', name: 'guiziweb_shop_chat', methods: ['POST'])]
+    #[Route('/{_locale}/chat', name: 'guiziweb_shop_chat', methods: ['POST'])]
     #[RateLimited]
     public function chat(Request $request): Response
     {

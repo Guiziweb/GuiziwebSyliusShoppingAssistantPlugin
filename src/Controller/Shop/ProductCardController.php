@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\TwigComponent\ComponentRendererInterface;
 
 #[Route(
-    path: '/chat/product-cards',
+    path: '/{_locale}/chat/product-cards',
     name: 'guiziweb_shop_chat_product_cards',
     methods: ['POST'],
 )]
