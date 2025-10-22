@@ -17,6 +17,13 @@ final class Version20251020101515 extends AbstractMigration
         return '';
     }
 
+    public function getDependencies(): array
+    {
+        return [
+            'Guiziweb\SyliusAIPlatformBundle\Migrations\Version20251019063404',
+        ];
+    }
+
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
