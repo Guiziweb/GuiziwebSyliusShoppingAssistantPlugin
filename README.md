@@ -1,190 +1,224 @@
-<p align="center">
-    <a href="https://sylius.com" target="_blank">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://media.sylius.com/sylius-logo-800-dark.png">
-          <source media="(prefers-color-scheme: light)" srcset="https://media.sylius.com/sylius-logo-800.png">
-          <img alt="Sylius Logo." src="https://media.sylius.com/sylius-logo-800.png">
-        </picture>
-    </a>
-</p>
+# Guiziweb Sylius Shopping Assistant Plugin
 
-<h1 align="center">Plugin Skeleton </h1>
+An AI-powered shopping assistant for Sylius e-commerce stores. This plugin adds an intelligent chat widget to help customers find products, answer questions, and navigate your store.
 
-<p align="center">Skeleton for starting Sylius plugins.</p>
+## Overview
 
+This plugin provides a customer-facing chat widget powered by AI (OpenAI, Anthropic, etc.) to assist shoppers in real-time. It integrates seamlessly with Sylius and uses the **Guiziweb Sylius AI Platform Bundle** for AI configuration.
 
-## Documentation
+## Features
 
-For a comprehensive guide on Sylius Plugins development please go to Sylius documentation,
-there you will find the <a href="https://docs.sylius.com/en/latest/plugin-development-guide/index.html">Plugin Development Guide</a>, that is full of examples.
+- **Smart Chat Widget**: Interactive chat interface on shop pages
+- **AI-Powered Responses**: Natural language understanding using GPT-4, Claude, or other AI models
+- **Product Recommendations**: AI assistant helps customers find the right products
+- **Order Assistance**: Answer questions about orders, shipping, and policies
+- **Multi-Channel Support**: Different AI agents per Sylius channel
+- **Conversation History**: Stores chat history for customer context
+- **Admin Configuration**: Configure widget appearance, behavior, and AI prompts
+- **Markdown Support**: Rich formatted responses with markdown rendering
 
-For more information about the **Test Application** included in the skeleton, please refer to the [Sylius documentation](https://docs.sylius.com/sylius-plugins/plugins-development-guide/testapplication).
+## Requirements
 
-## Quickstart Installation
+- PHP 8.2 or higher
+- Sylius 2.0 or higher
+- **Guiziweb Sylius AI Platform Bundle** (installed automatically as a dependency)
+- An API key from OpenAI, Anthropic, or another supported AI provider
 
-Run `composer create-project sylius/plugin-skeleton ProjectName`.
+## Installation
 
-### Traditional
+### Quick Installation (Recommended)
 
-1. From the plugin skeleton root directory, run the following commands:
+The plugin uses **Symfony Flex** for automatic configuration:
 
-    ```bash
-    (cd vendor/sylius/test-application && yarn install)
-    (cd vendor/sylius/test-application && yarn build)
-    vendor/bin/console assets:install
-   
-    vendor/bin/console doctrine:database:create
-    vendor/bin/console doctrine:migrations:migrate -n
-    # Optionally load data fixtures
-    vendor/bin/console sylius:fixtures:load -n
-    ```
+```bash
+composer require guiziweb/sylius-shopping-assistant-plugin
+```
 
-To be able to set up a plugin's database, remember to configure your database credentials in `tests/Application/.env` and `tests/Application/.env.test`.
+This will automatically:
+- Register the bundle in `config/bundles.php`
+- Create configuration files in `config/packages/`
+- Add JavaScript imports to `assets/shop/entrypoint.js`
+- Install the `marked` npm package for markdown rendering
+- Build frontend assets
 
-**⚠️ IMPORTANT - UTF-8 Support Required**: AI assistants can send emojis in their responses. You **must** configure UTF-8 support:
+### Configuration Requirements
 
-1. Add `?charset=utf8mb4` to your `DATABASE_URL` in `.env` files:
+To enable Symfony Flex recipes from this repository, add the custom recipe endpoint to your `composer.json`:
+
+```json
+{
+    "extra": {
+        "symfony": {
+            "allow-contrib": true,
+            "endpoint": [
+                "https://api.github.com/repos/Guiziweb/SyliusRecipes/contents/index.json?ref=flex/main",
+                "https://api.github.com/repos/Sylius/SyliusRecipes/contents/index.json?ref=flex/main",
+                "flex://defaults"
+            ]
+        }
+    }
+}
+```
+
+**Note:** You also need to set `"minimum-stability": "dev"` and `"prefer-stable": true` in your `composer.json` until a stable release is tagged.
+
+### Post-Installation
+
+1. **Run database migrations:**
+   ```bash
+   php bin/console doctrine:migrations:migrate -n
    ```
-   DATABASE_URL=mysql://root:root@127.0.0.1/your_database?charset=utf8mb4
+
+2. **Configure AI Platform** (if not already done):
+
+   Navigate to **Admin Panel → AI Configuration → Platform Configurations** and create a new platform configuration with your AI provider credentials.
+
+3. **Configure AI Agent**:
+
+   Navigate to **Admin Panel → AI Configuration → Agent Configurations** and create an agent for your shopping assistant.
+
+4. **Clear cache:**
+   ```bash
+   php bin/console cache:clear
    ```
 
-2. Add Doctrine DBAL configuration in `tests/TestApplication/config/config.yaml`:
-   ```yaml
-   doctrine:
-       dbal:
-           charset: utf8mb4
-           default_table_options:
-               charset: utf8mb4
-               collate: utf8mb4_unicode_ci
-   ```
+### Database UTF-8 Support
 
-3. Configure MySQL server in `compose.yml`:
-   ```yaml
-   mysql:
-       command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
-   ```
+**⚠️ IMPORTANT**: AI responses may contain emojis. Configure UTF-8 support:
 
-Without this configuration, you will get database errors when AI responses contain emojis.
+**For MySQL**, add to your `.env`:
+```
+DATABASE_URL=mysql://user:password@host/database?charset=utf8mb4
+```
 
-2. Run your local server:
+And in `config/packages/doctrine.yaml`:
+```yaml
+doctrine:
+    dbal:
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+```
 
-      ```bash
-      symfony server:ca:install
-      symfony server:start -d
-      ```
+**PostgreSQL** uses UTF-8 by default, no configuration needed.
 
-3. Open your browser and navigate to `https://localhost:8000`.
+## Configuration
 
-### Docker
+### Chat Widget Configuration
 
-1. Execute `make init` to initialize the container and install the dependencies.
+Navigate to **Admin Panel → Configuration → Chat Widget** to configure:
 
-2. Execute `make database-init` to create the database and run migrations.
+- **Widget Position**: Bottom-right, bottom-left, etc.
+- **Widget Colors**: Customize to match your brand
+- **AI Agent**: Select which AI agent to use
+- **Initial Message**: Welcome message shown to customers
+- **Enable/Disable**: Activate or deactivate the widget
 
-3. (Optional) Execute `make load-fixtures` to load the fixtures.
+### AI Agent Setup
 
-4. Your app is available at `http://localhost`.
+1. **Create Platform Configuration** (Admin → AI Configuration → Platform Configurations):
+   - Code: `openai_shop`
+   - Provider: OpenAI
+   - API Key: Your OpenAI API key
+
+2. **Create Agent Configuration** (Admin → AI Configuration → Agent Configurations):
+   - Code: `shopping_assistant`
+   - Channel: Select your shop channel
+   - Platform: `openai_shop`
+   - Model: `gpt-4`
+   - System Prompt: Define how the assistant should behave
+
+Example System Prompt:
+```
+You are a helpful shopping assistant for our online store. Help customers:
+- Find products that match their needs
+- Answer questions about products, shipping, and returns
+- Provide recommendations based on their preferences
+
+Be friendly, concise, and always prioritize customer satisfaction.
+```
 
 ## Usage
 
-### Running plugin tests
+Once configured, the chat widget will automatically appear on your shop pages. Customers can:
+- Click the chat icon to start a conversation
+- Ask questions about products
+- Get recommendations
+- Inquire about orders and policies
 
-  - PHPUnit
+The AI assistant will use the configured agent to provide intelligent, context-aware responses.
 
-    ```bash
-    vendor/bin/phpunit
-    ```
-
-  - Behat (non-JS scenarios)
-
-    ```bash
-    vendor/bin/behat --strict --tags="~@javascript&&~@mink:chromedriver"
-    ```
-
-  - Behat (JS scenarios)
- 
-    1. [Install Symfony CLI command](https://symfony.com/download).
- 
-    2. Start Headless Chrome:
-    
-      ```bash
-      google-chrome-stable --enable-automation --disable-background-networking --no-default-browser-check --no-first-run --disable-popup-blocking --disable-default-apps --allow-insecure-localhost --disable-translate --disable-extensions --no-sandbox --enable-features=Metal --headless --remote-debugging-port=9222 --window-size=2880,1800 --proxy-server='direct://' --proxy-bypass-list='*' http://127.0.0.1
-      ```
-    
-    3. Install SSL certificates (only once needed) and run test application's webserver on `127.0.0.1:8080`:
-    
-      ```bash
-      symfony server:ca:install
-      APP_ENV=test symfony server:start --port=8080 --daemon
-      ```
-    
-    4. Run Behat:
-    
-      ```bash
-      vendor/bin/behat --strict --tags="@javascript,@mink:chromedriver"
-      ```
-    
-  - Static Analysis
-      
-    - PHPStan
-    
-      ```bash
-      vendor/bin/phpstan analyse -c phpstan.neon -l max src/  
-      ```
-
-  - Coding Standard
-  
-    ```bash
-    vendor/bin/ecs check
-    ```
-
-### Opening Sylius with your plugin
-
-- Using `test` environment:
-
-    ```bash
-    APP_ENV=test vendor/bin/console vendor/bin/console sylius:fixtures:load -n
-    APP_ENV=test symfony server:start -d
-    ```
-
-- Using `dev` environment:
-
-    ```bash
-    vendor/bin/console vendor/bin/console sylius:fixtures:load -n
-    symfony server:start -d
-    ```
-
-## Maintenance Commands
+## Maintenance
 
 ### Cleaning Old Conversations
 
-Chat conversations are stored in the database and can accumulate over time. Use the cleanup command to remove old conversations:
+Chat conversations are stored in the database and can accumulate over time. Clean them periodically:
 
 ```bash
 # Delete conversations older than 30 days (default)
 php bin/console guiziweb:chat:clean-conversations
 
-# Delete conversations older than a specific number of days
+# Delete conversations older than 7 days
 php bin/console guiziweb:chat:clean-conversations --days=7
-php bin/console guiziweb:chat:clean-conversations -d 7
 
-# Delete ALL conversations (with confirmation prompt)
+# Delete ALL conversations (with confirmation)
 php bin/console guiziweb:chat:clean-conversations --all
 ```
 
-**Automated Cleanup with Cron:**
+### Automated Cleanup
 
-Add to your crontab to automatically clean old conversations daily:
-
+Add to your crontab:
 ```bash
-# Run every day at 3 AM, delete conversations older than 30 days
-0 3 * * * cd /path/to/your/project && php bin/console guiziweb:chat:clean-conversations
+# Run daily at 3 AM
+0 3 * * * cd /path/to/project && php bin/console guiziweb:chat:clean-conversations
 ```
 
-Or with Docker:
+## Development
+
+This repository contains a plugin skeleton for testing and development.
+
+### Running Tests
 
 ```bash
-# Run every day at 3 AM
-0 3 * * * docker exec your-php-container php bin/console guiziweb:chat:clean-conversations
+# PHPUnit
+vendor/bin/phpunit
+
+# Behat
+vendor/bin/behat
+
+# Code Quality
+vendor/bin/phpstan analyse
+vendor/bin/ecs check
 ```
 
+### Test Application Setup
+
+```bash
+# Install dependencies
+composer install
+
+# Setup test application assets
+(cd vendor/sylius/test-application && yarn install && yarn build)
+vendor/bin/console assets:install
+
+# Setup database
+vendor/bin/console doctrine:database:create
+vendor/bin/console doctrine:migrations:migrate -n
+vendor/bin/console sylius:fixtures:load -n
+
+# Run local server
+symfony server:start -d
+```
+
+## License
+
+This plugin is released under the MIT License. See the bundled LICENSE file for details.
+
+## Credits
+
+Developed by Guiziweb for the Sylius e-commerce platform.
+
+## Support
+
+For issues and feature requests, please use the GitHub issue tracker.
