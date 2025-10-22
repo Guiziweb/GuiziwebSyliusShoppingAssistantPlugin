@@ -30,7 +30,7 @@ use Symfony\Component\Form\FormView;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
-#[AsLiveComponent(name: 'guiziweb:chat:widget', template: '@GuiziwebSyliusShoppingAssistantPlugin/components/Chat/Widget.html.twig')]
+#[AsLiveComponent(name: 'guiziweb:chat:widget', template: '@GuiziwebSyliusShoppingAssistantPlugin/components/Chat/Widget.html.twig', route: 'sylius_shop_live_component')]
 #[AutoconfigureTag('sylius.live_component.shop', ['key' => 'guiziweb:chat:widget'])]
 final class WidgetComponent
 {

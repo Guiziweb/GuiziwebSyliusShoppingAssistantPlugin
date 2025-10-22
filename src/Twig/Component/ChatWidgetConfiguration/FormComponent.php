@@ -18,7 +18,7 @@ use Symfony\UX\LiveComponent\Attribute\PreReRender;
 /**
  * @use ResourceFormComponentTrait<ChatWidgetConfiguration>
  */
-#[AsLiveComponent(name: 'guiziweb:chat_widget_configuration:form', template: '@GuiziwebSyliusShoppingAssistantPlugin/components/ChatWidgetConfiguration/Form.html.twig')]
+#[AsLiveComponent(name: 'guiziweb:chat_widget_configuration:form', template: '@GuiziwebSyliusShoppingAssistantPlugin/components/ChatWidgetConfiguration/Form.html.twig', route: 'sylius_admin_live_component')]
 #[AutoconfigureTag('sylius.live_component.admin', ['key' => 'guiziweb:chat_widget_configuration:form'])]
 final class FormComponent
 {
