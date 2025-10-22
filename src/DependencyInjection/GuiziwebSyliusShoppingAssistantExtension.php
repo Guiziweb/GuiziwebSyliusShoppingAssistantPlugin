@@ -97,6 +97,7 @@ final class GuiziwebSyliusShoppingAssistantExtension extends AbstractResourceExt
     {
         return [
             'Sylius\Bundle\CoreBundle\Migrations',
+            'Guiziweb\SyliusAIPlatformBundle\Migrations',
         ];
     }
 }
