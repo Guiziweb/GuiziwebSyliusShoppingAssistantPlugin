@@ -21,6 +21,7 @@ use Symfony\AI\Platform\Message\ToolCallMessage;
 use Symfony\AI\Platform\Message\UserMessage;
 use Symfony\AI\Platform\Metadata\Metadata;
 use Symfony\AI\Platform\Result\ToolCall;
+use Symfony\AI\Platform\Result\ToolCallResult;
 use Symfony\Component\Uid\UuidV7;
 
 #[AsResource(
@@ -128,6 +129,7 @@ class ChatConversation implements ResourceInterface
 
                 // Tool calls (for search_products, add_to_cart, etc.)
                 ToolCall::class,
+                ToolCallResult::class,
 
                 // Metadata support
                 Metadata::class,
