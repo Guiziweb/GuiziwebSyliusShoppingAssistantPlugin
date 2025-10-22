@@ -32,8 +32,10 @@ final class ChatWidgetConfigurationFixture extends AbstractResourceFixture
                 ->scalarNode('channel')->cannotBeEmpty()->end()
                 ->scalarNode('agent')->cannotBeEmpty()->end()
                 ->booleanNode('enabled')->end()
-                ->scalarNode('locale')->end()
-                ->scalarNode('welcome_message')->cannotBeEmpty()->end()
+                ->arrayNode('welcome_message')
+                    ->useAttributeAsKey('locale')
+                    ->scalarPrototype()->end()
+                ->end()
         ;
     }
 }

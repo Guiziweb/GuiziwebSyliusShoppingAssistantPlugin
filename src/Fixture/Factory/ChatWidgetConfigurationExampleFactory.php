@@ -45,10 +45,12 @@ final class ChatWidgetConfigurationExampleFactory implements ExampleFactoryInter
             $chatWidgetConfiguration->setAgent($agent);
         }
 
-        // Set welcome message (translatable)
-        $chatWidgetConfiguration->setCurrentLocale($options['locale']);
-        $chatWidgetConfiguration->setFallbackLocale($options['locale']);
-        $chatWidgetConfiguration->setWelcomeMessage($options['welcome_message']);
+        // Set welcome message translations
+        foreach ($options['welcome_message'] as $localeCode => $message) {
+            $chatWidgetConfiguration->setCurrentLocale($localeCode);
+            $chatWidgetConfiguration->setFallbackLocale($localeCode);
+            $chatWidgetConfiguration->setWelcomeMessage($message);
+        }
 
         return $chatWidgetConfiguration;
     }
@@ -65,11 +67,8 @@ final class ChatWidgetConfigurationExampleFactory implements ExampleFactoryInter
             ->setDefault('enabled', true)
             ->setAllowedTypes('enabled', 'bool')
 
-            ->setDefault('locale', 'en_US')
-            ->setAllowedTypes('locale', 'string')
-
             ->setRequired('welcome_message')
-            ->setAllowedTypes('welcome_message', 'string')
+            ->setAllowedTypes('welcome_message', 'array')
         ;
     }
 }
