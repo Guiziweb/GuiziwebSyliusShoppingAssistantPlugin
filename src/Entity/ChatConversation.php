@@ -108,9 +108,12 @@ class ChatConversation implements ResourceInterface
             return new MessageBag();
         }
 
+        // Decode from base64 then deserialize
+        $decoded = base64_decode($this->messagesData);
+
         // Deserialize from PHP serialized string with strict whitelist
         // Only allow classes that are actually used in our e-commerce chat application
-        $unserialized = unserialize($this->messagesData, [
+        $unserialized = unserialize($decoded, [
             'allowed_classes' => [
                 // Core MessageBag container
                 MessageBag::class,
@@ -151,8 +154,12 @@ class ChatConversation implements ResourceInterface
      */
     public function setMessages(MessageBag $messages): self
     {
-        // Serialize MessageBag using PHP serialize (like SessionStore does)
-        $this->messagesData = serialize($messages);
+        // Serialize MessageBag then encode to base64 to avoid PDO truncation bugs
+        $serialized = serialize($messages);
+        $encoded = base64_encode($serialized);
+
+        $this->messagesData = $encoded;
+
         $this->updatedAt = new \DateTimeImmutable();
 
         return $this;

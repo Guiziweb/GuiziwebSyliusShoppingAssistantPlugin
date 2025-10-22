@@ -58,7 +58,13 @@ final readonly class ChatResponseProvider implements ChatResponseProviderInterfa
 
             $messages->add($assistantMessage);
 
+            $this->aiLogger->debug('About to serialize MessageBag', [
+                'message_count' => count($messages->getMessages()),
+            ]);
+
             $conversation->setMessages($messages);
+
+            $this->aiLogger->debug('MessageBag serialized successfully');
 
             $this->conversationManager->save($conversation);
 
