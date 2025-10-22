@@ -46,7 +46,7 @@ final class SearchProductsTool
         $products = $productRepository->createQueryBuilder('p')
             ->addSelect('translation')
             ->innerJoin('p.translations', 'translation', 'WITH', 'translation.locale = :locale')
-            ->andWhere('translation.name LIKE :query OR translation.description LIKE :query')
+            ->andWhere('LOWER(translation.name) LIKE LOWER(:query) OR LOWER(translation.description) LIKE LOWER(:query)')
             ->andWhere(':channel MEMBER OF p.channels')
             ->andWhere('p.enabled = :enabled')
             ->setParameter('locale', $locale)
@@ -58,7 +58,7 @@ final class SearchProductsTool
             ->getResult();
 
         // Return slug, name and description - AI needs these to talk accurately about products
-        return array_map(
+        $result = array_map(
             function (ProductInterface $product) {
                 $code = $product->getCode();
                 $slug = $product->getSlug();
@@ -77,5 +77,8 @@ final class SearchProductsTool
             },
             $products,
         );
+
+        // Wrap in object to avoid Gemini API error - Gemini doesn't accept array at root level
+        return ['products' => $result];
     }
 }
