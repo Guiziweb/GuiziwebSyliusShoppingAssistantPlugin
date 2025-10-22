@@ -75,8 +75,9 @@ final class GetProductInfoTool
         if ($mainVariant && $mainVariant->getChannelPricings()->first()) {
             $channelPricing = $mainVariant->getChannelPricings()->first();
             $price = $channelPricing->getPrice();
+            $baseCurrency = $channel->getBaseCurrency();
             // Format price (e.g., "8900" -> "89.00 EUR")
-            $price = number_format($price / 100, 2) . ' ' . ($channelPricing->getChannelCode() ?? 'EUR');
+            $price = number_format($price / 100, 2) . ' ' . $baseCurrency->getCode();
         }
 
         // Get attributes

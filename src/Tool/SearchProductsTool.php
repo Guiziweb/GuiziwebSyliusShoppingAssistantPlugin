@@ -13,7 +13,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 
 #[AsTool(
     name: 'search_products',
-    description: 'Search for products in the catalog by name or description. Returns a list of product slugs.',
+    description: 'Search for products in the catalog by name or description. Supports price filtering. Returns a list of product slugs.',
 )]
 final class SearchProductsTool
 {
@@ -28,12 +28,13 @@ final class SearchProductsTool
     }
 
     /**
-     * @param string $query The search query to find products
-     * @param int    $limit Maximum number of results to return (default: 5)
+     * @param string $query    The search query to find products
+     * @param int    $priceMax Maximum price in channel currency (0 = no filter, e.g., 50 for products under 50€/$/etc)
+     * @param int    $limit    Maximum number of results to return (default: 5)
      *
      * @return array<array{code: string, slug: string, name: string, description: ?string}> Array of products with code, slug, name and description
      */
-    public function __invoke(string $query, int $limit = 5): array
+    public function __invoke(string $query, int $priceMax = 0, int $limit = 5): array
     {
         $locale = $this->localeContext->getLocaleCode();
         $channel = $this->channelContext->getChannel();
@@ -41,19 +42,33 @@ final class SearchProductsTool
         /** @var ProductRepository<ProductInterface> $productRepository */
         $productRepository = $this->productRepository;
 
-        // Search products by name/description, filtered by channel and enabled status
-        /** @var array<ProductInterface> $products */
-        $products = $productRepository->createQueryBuilder('p')
+        $qb = $productRepository->createQueryBuilder('p')
             ->addSelect('translation')
+            ->addSelect('taxon')
+            ->addSelect('taxonTranslation')
             ->innerJoin('p.translations', 'translation', 'WITH', 'translation.locale = :locale')
-            ->andWhere('LOWER(translation.name) LIKE LOWER(:query) OR LOWER(translation.description) LIKE LOWER(:query)')
+            ->leftJoin('p.mainTaxon', 'taxon')
+            ->leftJoin('taxon.translations', 'taxonTranslation', 'WITH', 'taxonTranslation.locale = :locale')
+            ->andWhere('LOWER(translation.name) LIKE LOWER(:query) OR LOWER(translation.description) LIKE LOWER(:query) OR LOWER(taxonTranslation.name) LIKE LOWER(:query)')
             ->andWhere(':channel MEMBER OF p.channels')
             ->andWhere('p.enabled = :enabled')
             ->setParameter('locale', $locale)
             ->setParameter('query', '%' . $query . '%')
             ->setParameter('channel', $channel)
-            ->setParameter('enabled', true)
-            ->setMaxResults($limit)
+            ->setParameter('enabled', true);
+
+        // Filter by price if provided
+        if ($priceMax > 0) {
+            $qb->innerJoin('p.variants', 'variant')
+                ->innerJoin('variant.channelPricings', 'pricing')
+                ->andWhere('pricing.channelCode = :channelCode')
+                ->andWhere('pricing.price <= :priceMax')
+                ->setParameter('channelCode', $channel->getCode())
+                ->setParameter('priceMax', $priceMax * 100); // Convert to cents
+        }
+
+        /** @var array<ProductInterface> $products */
+        $products = $qb->setMaxResults($limit)
             ->getQuery()
             ->getResult();
 
