@@ -24,9 +24,11 @@
                         </div>
 
                         {# Content #}
-                        <div>
+                        <div data-chat-message-content>
                             {% if message.toolCall is defined and message.toolCall is not null %}
-                                {{ content }}
+                                <div data-chat-tool>
+                                    <pre><code>{{ content|json_pretty }}</code></pre>
+                                </div>
                             {% elseif content is iterable and content is not same as('') %}
                                 {% for part in content %}
                                     {% if part.text is defined %}
