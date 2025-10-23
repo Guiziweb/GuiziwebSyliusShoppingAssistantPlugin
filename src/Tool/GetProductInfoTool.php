@@ -40,7 +40,7 @@ final class GetProductInfoTool
     /**
      * @param string $slug The product slug
      *
-     * @return array{slug: string, name: string, description: ?string, price: ?string, attributes: array<string, mixed>, enabled: bool} Product information
+     * @return array{slug: string, name: string, description: ?string, price: ?string, attributes: array<string, mixed>, variants: array<array{code: string, options: array<string, string>, stock: int, price: string}>, enabled: bool} Product information
      */
     public function __invoke(string $slug): array
     {
@@ -68,6 +68,8 @@ final class GetProductInfoTool
             throw new \InvalidArgumentException('Product not found.');
         }
 
+        $baseCurrency = $channel->getBaseCurrency();
+
         // Get price from first variant
         $price = null;
         $mainVariant = $product->getVariants()->first();
@@ -75,7 +77,6 @@ final class GetProductInfoTool
         if ($mainVariant && $mainVariant->getChannelPricings()->first()) {
             $channelPricing = $mainVariant->getChannelPricings()->first();
             $price = $channelPricing->getPrice();
-            $baseCurrency = $channel->getBaseCurrency();
             // Format price (e.g., "8900" -> "89.00 EUR")
             $price = number_format($price / 100, 2) . ' ' . $baseCurrency->getCode();
         }
@@ -87,6 +88,35 @@ final class GetProductInfoTool
             if (null !== $attributeValue && '' !== $attributeValue) {
                 $attributes[$attribute->getName()] = $attributeValue;
             }
+        }
+
+        // Get all available variants (enabled + in stock)
+        $variants = [];
+        foreach ($product->getVariants() as $variant) {
+            /** @var ProductVariantInterface $variant */
+            // Skip disabled variants or out of stock
+            if (!$variant->isEnabled() || $variant->getOnHand() <= 0) {
+                continue;
+            }
+
+            $variantPrice = null;
+            $channelPricing = $variant->getChannelPricingForChannel($channel);
+            if ($channelPricing) {
+                $variantPrice = number_format($channelPricing->getPrice() / 100, 2) . ' ' . $baseCurrency->getCode();
+            }
+
+            // Get option values (e.g., "T-shirt size" => "M")
+            $options = [];
+            foreach ($variant->getOptionValues() as $optionValue) {
+                $options[$optionValue->getOption()->getName()] = $optionValue->getValue();
+            }
+
+            $variants[] = [
+                'code' => $variant->getCode(),
+                'options' => $options,
+                'stock' => $variant->getOnHand(),
+                'price' => $variantPrice ?? $price,
+            ];
         }
 
         $slug = $product->getSlug();
@@ -102,6 +132,7 @@ final class GetProductInfoTool
             'description' => $product->getDescription(),
             'price' => $price,
             'attributes' => $attributes,
+            'variants' => $variants,
             'enabled' => $product->isEnabled(),
         ];
     }

@@ -11,6 +11,7 @@ use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Component\Core\Repository\ProductRepositoryInterface;
+use Sylius\Component\Core\Repository\ProductVariantRepositoryInterface;
 use Sylius\Component\Order\Context\CartContextInterface;
 use Sylius\Component\Order\Context\CartNotFoundException;
 use Sylius\Component\Order\Modifier\OrderItemQuantityModifierInterface;
@@ -27,9 +28,11 @@ final readonly class AddToCartTool
 {
     /**
      * @param ProductRepositoryInterface<ProductInterface> $productRepository
+     * @param ProductVariantRepositoryInterface<ProductVariantInterface> $productVariantRepository
      */
     public function __construct(
         private ProductRepositoryInterface $productRepository,
+        private ProductVariantRepositoryInterface $productVariantRepository,
         private CartContextInterface $cartContext,
         private FactoryInterface $orderItemFactory,
         private OrderModifierInterface $orderModifier,
@@ -41,39 +44,65 @@ final readonly class AddToCartTool
     }
 
     /**
-     * @param string $productCode The EXACT product code from search_products result (e.g., "Coastal_Bliss_Jeans")
-     * @param int    $quantity    The quantity to add (default: 1)
+     * @param string $productCode        The EXACT product code from search_products result (e.g., "Coastal_Bliss_Jeans")
+     * @param string $productVariantCode Optional variant code from get_product_info (e.g., "Comet_Pulse_T_Shirt-variant-1"). If not provided, the first available variant will be used.
+     * @param int    $quantity           The quantity to add (default: 1)
      *
      * @return string Confirmation message
      */
-    public function __invoke(string $productCode, int $quantity = 1): string
+    public function __invoke(string $productCode, string $productVariantCode = '', int $quantity = 1): string
     {
         $this->aiLogger->debug('Add to cart tool called', [
             'productCode' => $productCode,
+            'productVariantCode' => $productVariantCode,
             'quantity' => $quantity,
         ]);
 
-        // Find the product
-        /** @var ProductInterface|null $product */
-        $product = $this->productRepository->findOneBy(['code' => $productCode]);
+        // If variant code is provided, use it directly
+        if ($productVariantCode !== '') {
+            /** @var ProductVariantInterface|null $variant */
+            $variant = $this->productVariantRepository->findOneBy(['code' => $productVariantCode]);
 
-        if (!$product) {
-            $this->aiLogger->error('Product not found', ['productCode' => $productCode]);
+            if (!$variant) {
+                $this->aiLogger->error('Variant not found', ['productVariantCode' => $productVariantCode]);
 
-            throw new \InvalidArgumentException('Product not found.');
-        }
+                throw new \InvalidArgumentException('Product variant not found.');
+            }
 
-        $this->aiLogger->debug('Product found', ['product' => $product->getName()]);
+            if (!$variant->isEnabled()) {
+                throw new \InvalidArgumentException('Product variant not available.');
+            }
 
-        if (!$product->isEnabled()) {
-            throw new \InvalidArgumentException('Product not available.');
-        }
+            /** @var ProductInterface $product */
+            $product = $variant->getProduct();
 
-        // Get the first available variant
-        /** @var ProductVariantInterface|false $variant */
-        $variant = $product->getVariants()->first();
-        if (!$variant) {
-            throw new \InvalidArgumentException('Product not available.');
+            $this->aiLogger->debug('Variant found', [
+                'product' => $product->getName(),
+                'variant' => $productVariantCode,
+            ]);
+        } else {
+            // Fallback: Find the product and use first available variant
+            /** @var ProductInterface|null $product */
+            $product = $this->productRepository->findOneBy(['code' => $productCode]);
+
+            if (!$product) {
+                $this->aiLogger->error('Product not found', ['productCode' => $productCode]);
+
+                throw new \InvalidArgumentException('Product not found.');
+            }
+
+            $this->aiLogger->debug('Product found', ['product' => $product->getName()]);
+
+            if (!$product->isEnabled()) {
+                throw new \InvalidArgumentException('Product not available.');
+            }
+
+            // Get the first available variant
+            /** @var ProductVariantInterface|false $variant */
+            $variant = $product->getVariants()->first();
+            if (!$variant) {
+                throw new \InvalidArgumentException('Product not available.');
+            }
         }
 
         // Get or create the current cart using CartContext
