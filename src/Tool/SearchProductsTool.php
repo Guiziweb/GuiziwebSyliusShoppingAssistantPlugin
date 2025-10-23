@@ -13,7 +13,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 
 #[AsTool(
     name: 'search_products',
-    description: 'Search for products in the catalog by name or description. Supports price filtering. Returns a list of product slugs.',
+    description: 'Search for products in the catalog by name or description. Supports price filtering. Returns a list of product slugs. IMPORTANT: If no results found, try different spelling variations (with/without hyphens, spaces, etc.). Example: "tshirt", "t-shirt", "t shirt".',
 )]
 final class SearchProductsTool
 {
