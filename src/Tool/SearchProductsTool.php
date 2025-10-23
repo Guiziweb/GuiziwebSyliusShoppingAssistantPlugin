@@ -14,7 +14,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 
 #[AsTool(
     name: 'search_products',
-    description: 'Search for products in the catalog by name or description. Supports price filtering. Returns a list of product slugs. IMPORTANT: If no results found, try different spelling variations (with/without hyphens, spaces, etc.). Example: "tshirt", "t-shirt", "t shirt".',
+    description: 'Search for products in the catalog by name or description. Supports price filtering. Returns a list of product slugs. IMPORTANT: If no results found, suggest common spelling variations (with/without hyphens, spaces, etc.) and ASK the user if they want you to search again with those variations. Example: "No results for \'tshirt\'. Would you like me to try \'t-shirt\' or \'t shirt\' instead?"',
 )]
 final class SearchProductsTool implements ToolInterface
 {
