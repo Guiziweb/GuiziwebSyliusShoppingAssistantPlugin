@@ -11,7 +11,7 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
-use Sylius\Component\Core\Repository\ProductRepositoryInterface;
+use Sylius\Component\Core\Repository\ProductVariantRepositoryInterface;
 use Sylius\Component\Order\Context\CartContextInterface;
 use Sylius\Component\Order\Context\CartNotFoundException;
 use Sylius\Component\Order\Modifier\OrderModifierInterface;
@@ -20,15 +20,15 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
 
 #[AsTool(
     name: 'remove_from_cart',
-    description: 'Remove a product completely from the shopping cart. Use this when the user wants to delete/remove an item from their cart. You need the exact product code.',
+    description: 'Remove a specific product variant from the shopping cart. Use this when the user wants to delete/remove an item from their cart. IMPORTANT: Use view_cart first to get the exact variant_code, then pass that variant_code to this tool. Example: "Cosmic_Drift_T_Shirt-variant-0".',
 )]
 final readonly class RemoveFromCartTool implements ToolInterface
 {
     /**
-     * @param ProductRepositoryInterface<ProductInterface> $productRepository
+     * @param ProductVariantRepositoryInterface<ProductVariantInterface> $productVariantRepository
      */
     public function __construct(
-        private ProductRepositoryInterface $productRepository,
+        private ProductVariantRepositoryInterface $productVariantRepository,
         private CartContextInterface $cartContext,
         private OrderModifierInterface $orderModifier,
         private OrderProcessorInterface $orderProcessor,
@@ -38,13 +38,13 @@ final readonly class RemoveFromCartTool implements ToolInterface
     }
 
     /**
-     * @param string $productCode The product code to remove from cart
+     * @param string $productVariantCode The exact product variant code from view_cart (e.g., "Cosmic_Drift_T_Shirt-variant-0")
      *
      * @return string Confirmation message
      */
-    public function __invoke(string $productCode): string
+    public function __invoke(string $productVariantCode): string
     {
-        $this->aiLogger->debug('Remove from cart tool called', ['productCode' => $productCode]);
+        $this->aiLogger->debug('Remove from cart tool called', ['productVariantCode' => $productVariantCode]);
 
         // Get cart
         try {
@@ -56,17 +56,19 @@ final readonly class RemoveFromCartTool implements ToolInterface
             throw new \RuntimeException('Unable to access cart. Please try again.', 0, $e);
         }
 
-        // Find the product
-        /** @var ProductInterface|null $product */
-        $product = $this->productRepository->findOneBy(['code' => $productCode]);
-        if (!$product) {
-            return 'Product not found.';
+        // Find the variant directly
+        /** @var ProductVariantInterface|null $variant */
+        $variant = $this->productVariantRepository->findOneBy(['code' => $productVariantCode]);
+
+        if (!$variant) {
+            return 'Product variant not found.';
         }
 
-        $variant = $product->getVariants()->first();
-        /** @var ProductVariantInterface|false $variant */
-        if (!$variant) {
-            return 'Product not available.';
+        $product = $variant->getProduct();
+        /** @var ProductInterface|null $product */
+
+        if (!$product) {
+            return 'Product not found.';
         }
 
         // Find the order item with this variant
@@ -81,7 +83,7 @@ final readonly class RemoveFromCartTool implements ToolInterface
         }
 
         if (!$orderItem) {
-            return 'Product not in cart.';
+            return 'This product variant is not in your cart.';
         }
 
         // Remove from cart
@@ -92,8 +94,9 @@ final readonly class RemoveFromCartTool implements ToolInterface
         $this->orderManager->persist($cart);
         $this->orderManager->flush();
 
-        $this->aiLogger->debug('Product removed from cart', ['product' => $product->getName()]);
+        $productName = $product->getName();
+        $this->aiLogger->debug('Product removed from cart', ['product' => $productName, 'variant' => $productVariantCode]);
 
-        return "Removed '{$product->getName()}' from your cart.";
+        return "Removed '{$variant->getName()}' from your cart.";
     }
 }
