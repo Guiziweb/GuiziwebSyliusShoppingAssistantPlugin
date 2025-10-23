@@ -41,9 +41,9 @@ final class GetProductInfoTool implements ToolInterface
     /**
      * @param string $slug The product slug
      *
-     * @return array{slug: string, name: string, description: ?string, price: ?string, attributes: array<string, mixed>, variants: array<array{code: string, options: array<string, string>, stock: int, price: string}>, enabled: bool} Product information
+     * @return string|array{slug: string, name: string, description: ?string, price: ?string, attributes: array<string, mixed>, variants: array<array{code: string, options: array<string, string>, stock: int, price: string}>, enabled: bool} Product information or error message
      */
-    public function __invoke(string $slug): array
+    public function __invoke(string $slug): string|array
     {
         $locale = $this->localeContext->getLocaleCode();
         $channel = $this->channelContext->getChannel();
@@ -66,7 +66,7 @@ final class GetProductInfoTool implements ToolInterface
             ->getOneOrNullResult();
 
         if (!$product) {
-            throw new \InvalidArgumentException('Product not found.');
+            return 'Product not found.';
         }
 
         $baseCurrency = $channel->getBaseCurrency();
@@ -124,7 +124,7 @@ final class GetProductInfoTool implements ToolInterface
         $name = $product->getName();
 
         if (!\is_string($slug) || !\is_string($name)) {
-            throw new \InvalidArgumentException('Product not available.');
+            return 'Product not available.';
         }
 
         return [

@@ -41,34 +41,24 @@ final readonly class RedirectTool implements ToolInterface
             'productSlug' => $productSlug,
         ]);
 
-        try {
-            $url = match ($route) {
-                'cart' => $this->urlGenerator->generate('sylius_shop_cart_summary'),
-                'checkout' => $this->urlGenerator->generate('sylius_shop_checkout_start'),
-                'account' => $this->urlGenerator->generate('sylius_shop_account_dashboard'),
-                'products' => $this->urlGenerator->generate('sylius_shop_product_index'),
-                'product' => $this->generateProductUrl($productSlug),
-                default => throw new \InvalidArgumentException("Unknown route: {$route}. Available: cart, checkout, account, products, product"),
-            };
+        $url = match ($route) {
+            'cart' => $this->urlGenerator->generate('sylius_shop_cart_summary'),
+            'checkout' => $this->urlGenerator->generate('sylius_shop_checkout_start'),
+            'account' => $this->urlGenerator->generate('sylius_shop_account_dashboard'),
+            'products' => $this->urlGenerator->generate('sylius_shop_product_index'),
+            'product' => $this->generateProductUrl($productSlug),
+            default => "Unknown route: {$route}. Available: cart, checkout, account, products, product",
+        };
 
-            $this->aiLogger->debug('Redirect URL generated', ['url' => $url]);
+        $this->aiLogger->debug('Redirect URL generated', ['url' => $url]);
 
-            return $url;
-        } catch (\Exception $e) {
-            $this->aiLogger->error('Redirect tool error', [
-                'exception' => $e->getMessage(),
-                'route' => $route,
-                'productSlug' => $productSlug,
-            ]);
-
-            throw $e;
-        }
+        return $url;
     }
 
     private function generateProductUrl(string $productSlug): string
     {
         if ('' === $productSlug) {
-            throw new \InvalidArgumentException('Product slug is required when using route "product"');
+            return 'Product slug is required when using route "product"';
         }
 
         // Verify product exists before generating URL
@@ -85,11 +75,11 @@ final readonly class RedirectTool implements ToolInterface
             ->getOneOrNullResult();
 
         if (!$product) {
-            throw new \InvalidArgumentException('Product not found.');
+            return 'Product not found.';
         }
 
         if (!$product->isEnabled()) {
-            throw new \InvalidArgumentException('Product not available.');
+            return 'Product not available.';
         }
 
         return $this->urlGenerator->generate('sylius_shop_product_show', ['slug' => $productSlug]);

@@ -67,11 +67,11 @@ final readonly class AddToCartTool implements ToolInterface
             if (!$variant) {
                 $this->aiLogger->error('Variant not found', ['productVariantCode' => $productVariantCode]);
 
-                throw new \InvalidArgumentException('Product variant not found.');
+                return 'Product variant not found.';
             }
 
             if (!$variant->isEnabled()) {
-                throw new \InvalidArgumentException('Product variant not available.');
+                return 'Product variant not available.';
             }
 
             /** @var ProductInterface $product */
@@ -89,20 +89,20 @@ final readonly class AddToCartTool implements ToolInterface
             if (!$product) {
                 $this->aiLogger->error('Product not found', ['productCode' => $productCode]);
 
-                throw new \InvalidArgumentException('Product not found.');
+                return 'Product not found.';
             }
 
             $this->aiLogger->debug('Product found', ['product' => $product->getName()]);
 
             if (!$product->isEnabled()) {
-                throw new \InvalidArgumentException('Product not available.');
+                return 'Product not available.';
             }
 
             // Get the first available variant
             /** @var ProductVariantInterface|false $variant */
             $variant = $product->getVariants()->first();
             if (!$variant) {
-                throw new \InvalidArgumentException('Product not available.');
+                return 'Product not available.';
             }
         }
 

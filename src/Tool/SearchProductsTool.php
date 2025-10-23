@@ -74,25 +74,24 @@ final class SearchProductsTool implements ToolInterface
             ->getResult();
 
         // Return slug, name and description - AI needs these to talk accurately about products
-        $result = array_map(
-            function (ProductInterface $product) {
-                $code = $product->getCode();
-                $slug = $product->getSlug();
-                $name = $product->getName();
+        $result = [];
+        foreach ($products as $product) {
+            $code = $product->getCode();
+            $slug = $product->getSlug();
+            $name = $product->getName();
 
-                if (!\is_string($code) || !\is_string($slug) || !\is_string($name)) {
-                    throw new \InvalidArgumentException('Product not available.');
-                }
+            // Skip products with missing data (data integrity issue)
+            if (!\is_string($code) || !\is_string($slug) || !\is_string($name)) {
+                continue;
+            }
 
-                return [
-                    'code' => $code,
-                    'slug' => $slug,
-                    'name' => $name,
-                    'description' => $product->getShortDescription(),
-                ];
-            },
-            $products,
-        );
+            $result[] = [
+                'code' => $code,
+                'slug' => $slug,
+                'name' => $name,
+                'description' => $product->getShortDescription(),
+            ];
+        }
 
         // Wrap in object to avoid Gemini API error - Gemini doesn't accept array at root level
         return ['products' => $result];
