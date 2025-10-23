@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusShoppingAssistantPlugin\Entity;
 
+use Guiziweb\SyliusShoppingAssistantPlugin\Serializer\MessageBagSerializer;
 use Sylius\Component\Channel\Model\ChannelInterface;
 use Sylius\Component\Customer\Model\CustomerInterface;
 use Sylius\Resource\Metadata\AsResource;
@@ -12,17 +13,7 @@ use Sylius\Resource\Metadata\Delete;
 use Sylius\Resource\Metadata\Index;
 use Sylius\Resource\Metadata\Show;
 use Sylius\Resource\Model\ResourceInterface;
-use Symfony\AI\Platform\Message\AssistantMessage;
-use Symfony\AI\Platform\Message\Content\Text;
 use Symfony\AI\Platform\Message\MessageBag;
-use Symfony\AI\Platform\Message\Role;
-use Symfony\AI\Platform\Message\SystemMessage;
-use Symfony\AI\Platform\Message\ToolCallMessage;
-use Symfony\AI\Platform\Message\UserMessage;
-use Symfony\AI\Platform\Metadata\Metadata;
-use Symfony\AI\Platform\Result\ToolCall;
-use Symfony\AI\Platform\Result\ToolCallResult;
-use Symfony\Component\Uid\UuidV7;
 
 #[AsResource(
     alias: 'guiziweb.chat_conversation',
@@ -46,7 +37,7 @@ class ChatConversation implements ResourceInterface
 
     private ?ChannelInterface $channel = null;
 
-    private ?string $messagesData = null;
+    private ?array $messagesData = null;
 
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -101,65 +92,26 @@ class ChatConversation implements ResourceInterface
 
     /**
      * Get messages as MessageBag object.
+     *
+     * Messages are stored as JSON in the database (Doctrine handles JSON encoding/decoding automatically).
      */
     public function getMessages(): MessageBag
     {
-        if ($this->messagesData === null) {
+        if ($this->messagesData === null || $this->messagesData === []) {
             return new MessageBag();
         }
 
-        // Decode from base64 then deserialize
-        $decoded = base64_decode($this->messagesData);
-
-        // Deserialize from PHP serialized string with strict whitelist
-        // Only allow classes that are actually used in our e-commerce chat application
-        $unserialized = unserialize($decoded, [
-            'allowed_classes' => [
-                // Core MessageBag container
-                MessageBag::class,
-
-                // Message types (4 types used in chat)
-                SystemMessage::class,
-                UserMessage::class,
-                AssistantMessage::class,
-                ToolCallMessage::class,
-
-                // Message role enum
-                Role::class,
-
-                // Content types (text only - no images/audio in our app)
-                Text::class,
-
-                // Tool calls (for search_products, add_to_cart, etc.)
-                ToolCall::class,
-                ToolCallResult::class,
-
-                // Metadata support
-                Metadata::class,
-
-                // UUID for message IDs
-                UuidV7::class,
-            ],
-        ]);
-
-        if (!$unserialized instanceof MessageBag) {
-            return new MessageBag();
-        }
-
-        return $unserialized;
+        return MessageBagSerializer::fromArray($this->messagesData);
     }
 
     /**
      * Set messages from MessageBag object.
+     *
+     * Doctrine will automatically convert the array to JSON for storage.
      */
     public function setMessages(MessageBag $messages): self
     {
-        // Serialize MessageBag then encode to base64 to avoid PDO truncation bugs
-        $serialized = serialize($messages);
-        $encoded = base64_encode($serialized);
-
-        $this->messagesData = $encoded;
-
+        $this->messagesData = MessageBagSerializer::toArray($messages);
         $this->updatedAt = new \DateTimeImmutable();
 
         return $this;

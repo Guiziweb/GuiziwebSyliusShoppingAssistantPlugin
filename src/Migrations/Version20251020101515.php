@@ -27,7 +27,11 @@ final class Version20251020101515 extends AbstractMigration
         );
 
         // Chat conversation table
-        $this->addSql('CREATE TABLE guiziweb_shopping_assistant_chat_conversation (id INT NOT NULL, customer_id INT DEFAULT NULL, channel_id INT NOT NULL, session_id VARCHAR(255) DEFAULT NULL, messagesData TEXT DEFAULT NULL, createdAt TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updatedAt TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        if ($this->connection->getDatabasePlatform() instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform) {
+            $this->addSql('CREATE TABLE guiziweb_shopping_assistant_chat_conversation (id INT NOT NULL, customer_id INT DEFAULT NULL, channel_id INT NOT NULL, session_id VARCHAR(255) DEFAULT NULL, messagesData TEXT DEFAULT NULL, createdAt TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updatedAt TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        } else {
+            $this->addSql('CREATE TABLE guiziweb_shopping_assistant_chat_conversation (id INT NOT NULL, customer_id INT DEFAULT NULL, channel_id INT NOT NULL, session_id VARCHAR(255) DEFAULT NULL, messagesData TEXT DEFAULT NULL, createdAt DATETIME NOT NULL, updatedAt DATETIME NOT NULL, PRIMARY KEY(id))');
+        }
         $this->addSql('CREATE INDEX IDX_189D78F89395C3F3 ON guiziweb_shopping_assistant_chat_conversation (customer_id)');
         $this->addSql('CREATE INDEX IDX_189D78F872F5A1AA ON guiziweb_shopping_assistant_chat_conversation (channel_id)');
         $this->addSql('CREATE INDEX idx_conversation_customer ON guiziweb_shopping_assistant_chat_conversation (customer_id, channel_id)');
@@ -51,6 +55,7 @@ final class Version20251020101515 extends AbstractMigration
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation ALTER COLUMN id SET DEFAULT nextval(\'guiziweb_shopping_assistant_chat_conversation_id_seq\')');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_widget_config_translation ALTER COLUMN id SET DEFAULT nextval(\'guiziweb_shopping_assistant_chat_widget_config_translation_id_seq\')');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_widget_configuration ALTER COLUMN id SET DEFAULT nextval(\'guiziweb_shopping_assistant_chat_widget_configuration_id_seq\')');
+            $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation ALTER COLUMN messagesData TYPE JSONB USING messagesData::jsonb');
             $this->addSql('COMMENT ON COLUMN guiziweb_shopping_assistant_chat_conversation.createdAt IS \'(DC2Type:datetime_immutable)\'');
             $this->addSql('COMMENT ON COLUMN guiziweb_shopping_assistant_chat_conversation.updatedAt IS \'(DC2Type:datetime_immutable)\'');
         }
@@ -60,7 +65,7 @@ final class Version20251020101515 extends AbstractMigration
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation MODIFY id INT AUTO_INCREMENT');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_widget_config_translation MODIFY id INT AUTO_INCREMENT');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_widget_configuration MODIFY id INT AUTO_INCREMENT');
-            $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation MODIFY messagesData LONGTEXT DEFAULT NULL');
+            $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation MODIFY messagesData JSON DEFAULT NULL');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation MODIFY createdAt DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_conversation MODIFY updatedAt DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\'');
             $this->addSql('ALTER TABLE guiziweb_shopping_assistant_chat_widget_config_translation MODIFY welcomeMessage LONGTEXT NOT NULL');
