@@ -11,24 +11,7 @@ services:
     # AI Logger
     Psr\Log\LoggerInterface $aiLogger: '@monolog.logger.ai'
 
-    # Tools - need explicit tag
-    Guiziweb\SyliusShoppingAssistantPlugin\Tool\SearchProductsTool:
-        tags: ['guiziweb.ai_tool']
-
-    Guiziweb\SyliusShoppingAssistantPlugin\Tool\AddToCartTool:
-        tags: ['guiziweb.ai_tool']
-
-    Guiziweb\SyliusShoppingAssistantPlugin\Tool\RemoveFromCartTool:
-        tags: ['guiziweb.ai_tool']
-
-    Guiziweb\SyliusShoppingAssistantPlugin\Tool\RedirectTool:
-        tags: ['guiziweb.ai_tool']
-
-    Guiziweb\SyliusShoppingAssistantPlugin\Tool\ShowProductCardTool:
-        tags: ['guiziweb.ai_tool']
-
-    Guiziweb\SyliusShoppingAssistantPlugin\Tool\GetProductInfoTool:
-        tags: ['guiziweb.ai_tool']
+    # Tools - auto-tagged via ToolInterface autoconfigure
 
     # Chat Conversation Context - Composite
     guiziweb.context.chat_conversation.composite:

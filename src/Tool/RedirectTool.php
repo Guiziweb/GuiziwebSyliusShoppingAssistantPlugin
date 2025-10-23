@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusShoppingAssistantPlugin\Tool;
 
+use Guiziweb\SyliusAIPlatformBundle\Tool\ToolInterface;
 use Psr\Log\LoggerInterface;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductRepository;
 use Sylius\Component\Core\Model\ProductInterface;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
     name: 'redirect',
     description: 'Redirect the user to a specific page. Available routes: "cart" (shopping cart), "checkout" (checkout page), "account" (user account), "products" (product listing), "product" (specific product page - requires productSlug parameter).',
 )]
-final readonly class RedirectTool
+final readonly class RedirectTool implements ToolInterface
 {
     /**
      * @param ProductRepositoryInterface<ProductInterface> $productRepository

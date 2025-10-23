@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusShoppingAssistantPlugin\Tool;
 
 use Doctrine\Persistence\ObjectManager;
+use Guiziweb\SyliusAIPlatformBundle\Tool\ToolInterface;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
@@ -21,7 +22,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
     name: 'remove_from_cart',
     description: 'Remove a product completely from the shopping cart. Use this when the user wants to delete/remove an item from their cart. You need the exact product code.',
 )]
-final readonly class RemoveFromCartTool
+final readonly class RemoveFromCartTool implements ToolInterface
 {
     /**
      * @param ProductRepositoryInterface<ProductInterface> $productRepository

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusShoppingAssistantPlugin\Tool;
 
+use Guiziweb\SyliusAIPlatformBundle\Tool\ToolInterface;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductRepository;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Model\ProductInterface;
@@ -15,7 +16,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
     name: 'search_products',
     description: 'Search for products in the catalog by name or description. Supports price filtering. Returns a list of product slugs. IMPORTANT: If no results found, try different spelling variations (with/without hyphens, spaces, etc.). Example: "tshirt", "t-shirt", "t shirt".',
 )]
-final class SearchProductsTool
+final class SearchProductsTool implements ToolInterface
 {
     /**
      * @param ProductRepositoryInterface<ProductInterface> $productRepository

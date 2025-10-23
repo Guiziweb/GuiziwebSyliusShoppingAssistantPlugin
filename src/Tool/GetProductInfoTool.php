@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Guiziweb\SyliusShoppingAssistantPlugin\Tool;
 
+use Guiziweb\SyliusAIPlatformBundle\Tool\ToolInterface;
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductRepository;
 use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Core\Model\ProductInterface;
@@ -25,7 +26,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
     name: 'get_product_info',
     description: 'Get detailed product information including description, price, attributes, and reviews. Use this to compare products or provide detailed information to the user.',
 )]
-final class GetProductInfoTool
+final class GetProductInfoTool implements ToolInterface
 {
     /**
      * @param ProductRepositoryInterface<ProductInterface> $productRepository

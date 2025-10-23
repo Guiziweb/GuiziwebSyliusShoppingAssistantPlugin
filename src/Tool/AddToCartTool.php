@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Guiziweb\SyliusShoppingAssistantPlugin\Tool;
 
 use Doctrine\Persistence\ObjectManager;
+use Guiziweb\SyliusAIPlatformBundle\Tool\ToolInterface;
 use Psr\Log\LoggerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\OrderItemInterface;
@@ -24,7 +25,7 @@ use Symfony\AI\Agent\Toolbox\Attribute\AsTool;
     name: 'add_to_cart',
     description: 'Add a product to the shopping cart. IMPORTANT: You MUST use the exact "code" value returned by search_products tool. Do NOT invent or modify the product code. Example: if search_products returns code="Coastal_Bliss_Jeans", use that EXACT string.',
 )]
-final readonly class AddToCartTool
+final readonly class AddToCartTool implements ToolInterface
 {
     /**
      * @param ProductRepositoryInterface<ProductInterface> $productRepository
