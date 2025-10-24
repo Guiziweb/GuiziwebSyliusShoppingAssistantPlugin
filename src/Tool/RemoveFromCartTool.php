@@ -61,14 +61,14 @@ final readonly class RemoveFromCartTool implements ToolInterface
         $variant = $this->productVariantRepository->findOneBy(['code' => $productVariantCode]);
 
         if (!$variant) {
-            return 'Product variant not found.';
+            throw new \InvalidArgumentException('Product variant not found.');
         }
 
         $product = $variant->getProduct();
         /** @var ProductInterface|null $product */
 
         if (!$product) {
-            return 'Product not found.';
+            throw new \InvalidArgumentException('Product not found.');
         }
 
         // Find the order item with this variant
@@ -83,7 +83,7 @@ final readonly class RemoveFromCartTool implements ToolInterface
         }
 
         if (!$orderItem) {
-            return 'This product variant is not in your cart.';
+            throw new \InvalidArgumentException('This product variant is not in your cart.');
         }
 
         // Remove from cart

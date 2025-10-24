@@ -47,7 +47,7 @@ final readonly class RedirectTool implements ToolInterface
             'account' => $this->urlGenerator->generate('sylius_shop_account_dashboard'),
             'products' => $this->urlGenerator->generate('sylius_shop_product_index'),
             'product' => $this->generateProductUrl($productSlug),
-            default => "Unknown route: {$route}. Available: cart, checkout, account, products, product",
+            default => throw new \InvalidArgumentException("Unknown route: {$route}. Available: cart, checkout, account, products, product"),
         };
 
         $this->aiLogger->debug('Redirect URL generated', ['url' => $url]);
@@ -58,7 +58,7 @@ final readonly class RedirectTool implements ToolInterface
     private function generateProductUrl(string $productSlug): string
     {
         if ('' === $productSlug) {
-            return 'Product slug is required when using route "product"';
+            throw new \InvalidArgumentException('Product slug is required when using route "product"');
         }
 
         // Verify product exists before generating URL
@@ -75,11 +75,11 @@ final readonly class RedirectTool implements ToolInterface
             ->getOneOrNullResult();
 
         if (!$product) {
-            return 'Product not found.';
+            throw new \InvalidArgumentException('Product not found.');
         }
 
         if (!$product->isEnabled()) {
-            return 'Product not available.';
+            throw new \InvalidArgumentException('Product not available.');
         }
 
         return $this->urlGenerator->generate('sylius_shop_product_show', ['slug' => $productSlug]);
