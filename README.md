@@ -10,12 +10,17 @@ This plugin provides a customer-facing chat widget powered by AI (OpenAI, Anthro
 
 - **Smart Chat Widget**: Interactive chat interface on shop pages
 - **AI-Powered Responses**: Natural language understanding using GPT-4, Claude, or other AI models
-- **Product Recommendations**: AI assistant helps customers find the right products
-- **Order Assistance**: Answer questions about orders, shipping, and policies
+- **Advanced AI Tools**: 7 specialized tools for e-commerce interactions:
+  - **Product Search**: Search catalog by name, description, or category with price filtering
+  - **Product Details**: Get complete product information including variants, prices, and stock
+  - **Cart Management**: Add/remove items, view cart contents with pricing
+  - **Visual Product Cards**: Display product images and information inline
+  - **Smart Navigation**: Redirect users to cart, checkout, account, or product pages
 - **Multi-Channel Support**: Different AI agents per Sylius channel
 - **Conversation History**: Stores chat history for customer context
-- **Admin Configuration**: Configure widget appearance, behavior, and AI prompts
+- **Admin Configuration**: Configure widget behavior, AI agent, and welcome message
 - **Markdown Support**: Rich formatted responses with markdown rendering
+- **Metadata System**: Return structured data (products, redirect URLs) alongside AI responses
 
 ## Requirements
 
@@ -109,10 +114,9 @@ doctrine:
 
 Navigate to **Admin Panel → Configuration → Chat Widget** to configure:
 
-- **Widget Position**: Bottom-right, bottom-left, etc.
-- **Widget Colors**: Customize to match your brand
-- **AI Agent**: Select which AI agent to use
-- **Initial Message**: Welcome message shown to customers
+- **Channel**: Select which Sylius channel this configuration applies to
+- **AI Agent**: Select which AI agent to use for this channel
+- **Welcome Message**: Customizable welcome message shown to customers
 - **Enable/Disable**: Activate or deactivate the widget
 
 ### AI Agent Setup
@@ -148,6 +152,88 @@ Once configured, the chat widget will automatically appear on your shop pages. C
 - Inquire about orders and policies
 
 The AI assistant will use the configured agent to provide intelligent, context-aware responses.
+
+## AI Tools
+
+The plugin provides 7 examples tools that the AI assistant can use to interact with your store:
+
+### Product Discovery Tools
+
+#### `search_products`
+Search for products in the catalog by name, description, or category.
+- **Parameters**:
+  - `query` (string): Search query
+  - `priceMax` (int, optional): Maximum price filter (0 = no filter)
+  - `limit` (int, optional): Max results (default: 5)
+- **Returns**: Array of products with code, slug, name, and description
+- **Example**: "Find me blue jeans under 100 EUR"
+
+#### `get_product_info`
+Get detailed information about a specific product including variants, prices, stock, and attributes.
+- **Parameters**:
+  - `slug` (string): Product slug
+- **Returns**: Complete product details including all variants and their availability
+- **Example**: "Tell me more about the Azure Dream Jeans"
+
+#### `show_product_card`
+Display visual product cards with images, names, and prices inline in the chat.
+- **Parameters**:
+  - `slugs` (array): Array of product slugs to display
+- **Returns**: Visual product cards rendered in the chat
+- **Example**: "Show me these products: azure-dream-jeans, coastal-bliss-jeans"
+
+### Cart Management Tools
+
+#### `view_cart`
+View the current shopping cart contents with full details.
+- **Parameters**: None
+- **Returns**: Cart items with product names, variant codes, options (size, color), quantities, and prices
+- **Example**: "What's in my cart?"
+
+#### `add_to_cart`
+Add a product variant to the shopping cart.
+- **Parameters**:
+  - `productCode` (string): Exact product code from search results
+  - `productVariantCode` (string, optional): Specific variant code
+  - `quantity` (int, optional): Quantity to add (default: 1)
+- **Returns**: Confirmation message
+- **Example**: "Add the Azure Dream Jeans in size M to my cart"
+
+#### `remove_from_cart`
+Remove a specific product variant from the cart.
+- **Parameters**:
+  - `productVariantCode` (string): Exact variant code from view_cart
+- **Returns**: Confirmation message
+- **Example**: "Remove the blue jeans from my cart"
+
+### Navigation Tool
+
+#### `redirect`
+Redirect the user to specific pages in the store.
+- **Parameters**:
+  - `route` (string): Route name ('cart', 'checkout', 'account', 'products', 'product')
+  - `productSlug` (string, optional): Required when route is 'product'
+- **Returns**: Redirect URL (browser will navigate automatically)
+- **Example**: "Take me to checkout"
+
+### Tool Usage in System Prompts
+
+When configuring your AI agent, you can guide the assistant on how to use these tools effectively:
+
+```
+You are a helpful shopping assistant with access to the following tools:
+
+1. search_products - Use this to find products matching customer needs
+2. get_product_info - Use this to get detailed information about specific products
+3. show_product_card - Use this to visually display products to customers
+4. add_to_cart - Use this when customers want to purchase items
+5. view_cart - Use this to show customers what's in their cart
+6. remove_from_cart - Use this when customers want to remove items
+7. redirect - Use this to navigate customers to cart, checkout, or product pages
+
+Always use search_products first when customers ask about products. When adding to cart, always
+use the exact product codes returned by search_products.
+```
 
 ## Maintenance
 
