@@ -155,66 +155,17 @@ The AI assistant will use the configured agent to provide intelligent, context-a
 
 ## AI Tools
 
-The plugin provides 7 examples tools that the AI assistant can use to interact with your store:
+The plugin provides 7 specialized tools that the AI assistant can use to interact with your store:
 
-### Product Discovery Tools
-
-#### `search_products`
-Search for products in the catalog by name, description, or category.
-- **Parameters**:
-  - `query` (string): Search query
-  - `priceMax` (int, optional): Maximum price filter (0 = no filter)
-  - `limit` (int, optional): Max results (default: 5)
-- **Returns**: Array of products with code, slug, name, and description
-- **Example**: "Find me blue jeans under 100 EUR"
-
-#### `get_product_info`
-Get detailed information about a specific product including variants, prices, stock, and attributes.
-- **Parameters**:
-  - `slug` (string): Product slug
-- **Returns**: Complete product details including all variants and their availability
-- **Example**: "Tell me more about the Azure Dream Jeans"
-
-#### `show_product_card`
-Display visual product cards with images, names, and prices inline in the chat.
-- **Parameters**:
-  - `slugs` (array): Array of product slugs to display
-- **Returns**: Visual product cards rendered in the chat
-- **Example**: "Show me these products: azure-dream-jeans, coastal-bliss-jeans"
-
-### Cart Management Tools
-
-#### `view_cart`
-View the current shopping cart contents with full details.
-- **Parameters**: None
-- **Returns**: Cart items with product names, variant codes, options (size, color), quantities, and prices
-- **Example**: "What's in my cart?"
-
-#### `add_to_cart`
-Add a product variant to the shopping cart.
-- **Parameters**:
-  - `productCode` (string): Exact product code from search results
-  - `productVariantCode` (string, optional): Specific variant code
-  - `quantity` (int, optional): Quantity to add (default: 1)
-- **Returns**: Confirmation message
-- **Example**: "Add the Azure Dream Jeans in size M to my cart"
-
-#### `remove_from_cart`
-Remove a specific product variant from the cart.
-- **Parameters**:
-  - `productVariantCode` (string): Exact variant code from view_cart
-- **Returns**: Confirmation message
-- **Example**: "Remove the blue jeans from my cart"
-
-### Navigation Tool
-
-#### `redirect`
-Redirect the user to specific pages in the store.
-- **Parameters**:
-  - `route` (string): Route name ('cart', 'checkout', 'account', 'products', 'product')
-  - `productSlug` (string, optional): Required when route is 'product'
-- **Returns**: Redirect URL (browser will navigate automatically)
-- **Example**: "Take me to checkout"
+| Tool | Description | Parameters | Example Usage |
+|------|-------------|------------|---------------|
+| **search_products** | Search for products in the catalog by name, description, or category | `query` (string): Search query<br>`priceMax` (int, optional): Max price filter<br>`limit` (int, optional): Max results (default: 5) | "Find me blue jeans under 100 EUR" |
+| **get_product_info** | Get detailed product information including variants, prices, stock, and attributes | `slug` (string): Product slug | "Tell me more about the Azure Dream Jeans" |
+| **show_product_card** | Display visual product cards with images, names, and prices inline in the chat | `slugs` (array): Array of product slugs to display | "Show me these products visually" |
+| **view_cart** | View the current shopping cart contents with full details | None | "What's in my cart?" |
+| **add_to_cart** | Add a product variant to the shopping cart | `productCode` (string): Exact product code from search results<br>`productVariantCode` (string, optional): Specific variant code<br>`quantity` (int, optional): Quantity to add (default: 1) | "Add the Azure Dream Jeans in size M to my cart" |
+| **remove_from_cart** | Remove a specific product variant from the cart | `productVariantCode` (string): Exact variant code from view_cart | "Remove the blue jeans from my cart" |
+| **redirect** | Redirect the user to specific pages in the store | `route` (string): Route name ('cart', 'checkout', 'account', 'products', 'product')<br>`productSlug` (string, optional): Required when route is 'product' | "Take me to checkout" |
 
 ### Tool Usage in System Prompts
 
