@@ -22,7 +22,7 @@
     },
     "require-dev": {
         "behat/behat": "^3.16",
-        "cweagans/composer-patches": "^1.7",
+        "cweagans/composer-patches": "^2.0",
         "dmore/behat-chrome-extension": "^1.4",
         "dmore/chrome-mink-driver": "^2.9",
         "doctrine/cache": "^2.2",
