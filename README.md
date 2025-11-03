@@ -26,6 +26,7 @@ This plugin provides a customer-facing chat widget powered by AI (OpenAI, Anthro
 
 - PHP 8.2 or higher
 - Sylius 2.0 or higher
+- Symfony 7.3 or higher
 - **Guiziweb Sylius AI Platform Bundle** (installed automatically as a dependency)
 - An API key from OpenAI, Anthropic, or another supported AI provider
 
