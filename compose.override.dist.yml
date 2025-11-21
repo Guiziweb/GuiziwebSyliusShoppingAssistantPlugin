@@ -40,7 +40,7 @@ services:
         volumes:
             - mysql-data:/var/lib/mysql:rw
         ports:
-            - "3306:3306"
+            - "3307:3306"
     nginx:
         environment:
             WORKING_DIR: /srv/sylius/tests/Application
@@ -49,7 +49,7 @@ services:
             # if you develop on Linux, you may use a bind-mounted host directory instead
 #            - ./public/media:/srv/sylius/public/media:ro
         ports:
-            - "80:80"
+            - "6081:80"
     nodejs:
         image: node:${NODE_VERSION:-20}-alpine
         user: ${DOCKER_USER:-1000:1000}
@@ -65,7 +65,7 @@ services:
             - ./public:/srv/sylius/public:rw,delegated
     mailhog:
         ports:
-            - "8025:8025"
+            - "8026:8025"
 
 volumes:
     mysql-data:
