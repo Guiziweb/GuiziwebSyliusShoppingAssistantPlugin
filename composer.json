@@ -2,6 +2,8 @@
     "name": "guiziweb/sylius-shopping-assistant-plugin",
     "type": "sylius-plugin",
     "description": "AI-powered shopping assistant plugin for Sylius eCommerce.",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "keywords": [
         "sylius",
         "sylius-plugin",
