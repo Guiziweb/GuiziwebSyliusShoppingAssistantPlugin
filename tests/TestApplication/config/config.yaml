@@ -4,7 +4,6 @@ imports:
     - { resource: "services_test.php" }
     - { resource: "packages/doctrine.yaml" }
     - { resource: "packages/sylius_resource.yaml" }
-    - { resource: "sylius_fixtures.yaml" }
 
 twig:
     paths:
