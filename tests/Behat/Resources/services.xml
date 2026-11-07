@@ -4,13 +4,5 @@
     <services>
         <defaults public="true" />
         <!-- Put your Behat services here -->
-
-        <service id="guiziweb_sylius_shopping_assistant.context.ui.shop.welcome" class="Tests\Guiziweb\SyliusShoppingAssistantPlugin\Behat\Context\Ui\Shop\WelcomeContext">
-            <argument type="service" id="guiziweb_sylius_shopping_assistant.page.shop.static_welcome" />
-            <argument type="service" id="guiziweb_sylius_shopping_assistant.page.shop.dynamic_welcome" />
-        </service>
-
-        <service id="guiziweb_sylius_shopping_assistant.page.shop.static_welcome" class="Tests\Guiziweb\SyliusShoppingAssistantPlugin\Behat\Page\Shop\StaticWelcomePage" parent="sylius.behat.symfony_page" public="false" />
-        <service id="guiziweb_sylius_shopping_assistant.page.shop.dynamic_welcome" class="Tests\Guiziweb\SyliusShoppingAssistantPlugin\Behat\Page\Shop\DynamicWelcomePage" parent="sylius.behat.symfony_page" public="false" />
     </services>
 </container>
